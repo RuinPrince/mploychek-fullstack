@@ -10,7 +10,16 @@ import recordsRoutes from './routes/records.routes';
 const app = express();
 
 // --------------- Global Middleware ---------------
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || origin.includes('localhost') || origin.includes('vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, env.CORS_ORIGIN);
+    }
+  },
+  credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
