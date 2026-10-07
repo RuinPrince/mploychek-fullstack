@@ -88,7 +88,7 @@ export class UserDialogComponent implements OnInit {
     });
   }
 
-  private cleanUpdatePayload(val: any): UpdateUserPayload {
+  private cleanUpdatePayload(val: Partial<CreateUserPayload>): UpdateUserPayload {
     const payload: UpdateUserPayload = {
       name: val.name,
       email: val.email,

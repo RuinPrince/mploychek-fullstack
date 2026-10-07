@@ -144,6 +144,12 @@ a {
   }
 }
 
+// ─── ACCESSIBILITY ────────────────────────────────────────────────
+:focus-visible {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+}
+
 // ─── MATERIAL OVERRIDES ────────────────────────────────────────────
 
 // Rounded form fields
@@ -191,6 +197,10 @@ a {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.mat-mdc-row {
+  transition: background-color 0.25s ease, opacity 0.25s ease;
 }
 
 // Scrollbar

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -24,6 +25,8 @@ export class LoginComponent implements OnInit {
     { value: 'GENERAL_USER', label: 'General User' },
     { value: 'ADMIN', label: 'Admin' },
   ];
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +70,7 @@ export class LoginComponent implements OnInit {
 
     const req: LoginRequest = this.loginForm.getRawValue() as LoginRequest;
 
-    this.auth.login(req).subscribe({
+    this.auth.login(req).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.loading = false;
         this.router.navigateByUrl(this.returnUrl);

@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, NavigationEnd } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Subject, filter, takeUntil, map } from 'rxjs';
+import { filter, map } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { DelayService } from '../../core/services/delay.service';
 import { User } from '../../core/models/user.model';
@@ -19,8 +20,8 @@ interface NavItem {
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
 })
-export class ShellComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class ShellComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   user: User | null = null;
   pageTitle = 'Dashboard';
@@ -44,7 +45,7 @@ export class ShellComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Subscribe to current user
     this.auth.currentUser$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((u) => (this.user = u));
 
     // Track page title from route
@@ -52,23 +53,18 @@ export class ShellComponent implements OnInit, OnDestroy {
       .pipe(
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),
         map((e) => this.getTitleFromUrl(e.urlAfterRedirects)),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((title) => (this.pageTitle = title));
 
     // Responsive sidebar
     this.breakpoint
-      .observe('(max-width: 900px)')
-      .pipe(takeUntil(this.destroy$))
+      .observe('(max-width: 768px)')
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((result) => {
         this.isMobile = result.matches;
         this.sidebarOpen = !result.matches;
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   get userInitials(): string {

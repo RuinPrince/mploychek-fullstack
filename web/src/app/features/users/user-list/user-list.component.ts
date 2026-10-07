@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -36,6 +37,8 @@ export class UserListComponent implements OnInit {
     { label: 'Inactive', value: 'INACTIVE' },
   ];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -44,10 +47,7 @@ export class UserListComponent implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {
-    // Get the current user synchronously by taking 1 from the observable
-    // (BehaviorSubject emits synchronously)
-    // Assuming currentUser$ is available on AuthService
-    (this.auth as any).currentUser$?.pipe(take(1)).subscribe((u: User | null) => {
+    this.auth.currentUser$?.pipe(take(1)).subscribe((u: User | null) => {
       this.currentUserId = u?.userId || '';
     });
     
@@ -99,7 +99,7 @@ export class UserListComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe((result: User | undefined) => {
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result: User | undefined) => {
       if (result) {
         this.snackBar.open('User created successfully', 'Close', { duration: 3000 });
         this.retry(); // Refresh the list
@@ -113,7 +113,7 @@ export class UserListComponent implements OnInit {
       data: { user }
     });
 
-    dialogRef.afterClosed().subscribe((result: User | undefined) => {
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result: User | undefined) => {
       if (result) {
         this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
         this.retry(); // Refresh the list
@@ -136,9 +136,11 @@ export class UserListComponent implements OnInit {
       data
     });
 
-    dialogRef.afterClosed().subscribe(confirmed => {
+    dialogRef.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(confirmed => {
       if (confirmed) {
-        this.userService.deactivateUser(user.userId, this.delayService.current).subscribe({
+        this.userService.deactivateUser(user.userId, this.delayService.current)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
           next: () => {
             this.snackBar.open('User deactivated successfully', 'Close', { duration: 3000 });
             this.retry();
