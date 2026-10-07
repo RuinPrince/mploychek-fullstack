@@ -1,0 +1,182 @@
+<!-- ─── Header row with greeting + reload ─── -->
+<div class="dash-header">
+  <div class="dash-greeting">
+    <h1>{{ greeting }}<span *ngIf="(profileState$ | async)?.status === 'success'">, {{ (profileState$ | async)?.data?.name }}</span></h1>
+    <p class="dash-subtitle">Here's an overview of your background verification activity.</p>
+  </div>
+  <button mat-stroked-button color="primary" class="reload-btn" (click)="loadAll()">
+    <mat-icon>refresh</mat-icon>
+    Reload
+  </button>
+</div>
+
+<!-- ─── Top row: Profile + Stats ─── -->
+<div class="dash-top-row">
+  <!-- Profile Card -->
+  <mat-card class="profile-card">
+    <app-async-view [state]="(profileState$ | async)!" [skeletonRows]="3" [skeletonCols]="2" (retry)="loadAll()">
+      <div class="profile-content" *ngIf="(profileState$ | async)?.data as user">
+        <div class="profile-avatar">
+          {{ getInitials(user.name) }}
+        </div>
+        <div class="profile-info">
+          <h2 class="profile-name">{{ user.name }}</h2>
+          <p class="profile-id">{{ user.userId }}</p>
+          <p class="profile-email">
+            <mat-icon class="inline-icon">email</mat-icon>
+            {{ user.email }}
+          </p>
+          <div class="profile-chips">
+            <span class="chip chip-role" [class.admin]="user.role === 'ADMIN'">
+              {{ getRoleLabel(user.role) }}
+            </span>
+            <app-status-badge [status]="user.status"></app-status-badge>
+          </div>
+        </div>
+      </div>
+    </app-async-view>
+  </mat-card>
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    <app-async-view [state]="(statsState$ | async)!" [skeletonRows]="1" [skeletonCols]="4" (retry)="loadAll()">
+      <ng-container *ngIf="(statsState$ | async)?.data as stats">
+        <mat-card class="stat-card">
+          <div class="stat-icon total">
+            <mat-icon>folder_open</mat-icon>
+          </div>
+          <div class="stat-detail">
+            <span class="stat-value">{{ stats.total }}</span>
+            <span class="stat-label">Total Records</span>
+          </div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-icon verified">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-detail">
+            <span class="stat-value">{{ stats.verified }}</span>
+            <span class="stat-label">Verified</span>
+          </div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-icon pending">
+            <mat-icon>hourglass_empty</mat-icon>
+          </div>
+          <div class="stat-detail">
+            <span class="stat-value">{{ stats.pending }}</span>
+            <span class="stat-label">Pending</span>
+          </div>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <div class="stat-icon rejected">
+            <mat-icon>cancel</mat-icon>
+          </div>
+          <div class="stat-detail">
+            <span class="stat-value">{{ stats.rejected }}</span>
+            <span class="stat-label">Rejected</span>
+          </div>
+        </mat-card>
+      </ng-container>
+    </app-async-view>
+  </div>
+</div>
+
+<!-- ─── Bottom row: Recent records + Access level ─── -->
+<div class="dash-bottom-row">
+  <!-- Recent Records -->
+  <mat-card class="recent-card">
+    <div class="card-header">
+      <h3>
+        <mat-icon class="section-icon">history</mat-icon>
+        Recent Records
+      </h3>
+      <a mat-button color="primary" routerLink="/records">View All</a>
+    </div>
+
+    <app-async-view [state]="(recordsState$ | async)!" [skeletonRows]="5" [skeletonCols]="3" (retry)="loadAll()"
+      emptyIcon="inbox" emptyTitle="No records yet" emptyMessage="Your verification records will appear here.">
+      <div class="record-list" *ngIf="(recordsState$ | async)?.data as records">
+        <div class="record-item" *ngFor="let r of records">
+          <div class="record-left">
+            <span class="record-title">{{ r.title }}</span>
+            <span class="record-meta">{{ r.type }} &middot; {{ r.createdAt | date:'mediumDate' }}</span>
+          </div>
+          <app-status-badge [status]="r.status"></app-status-badge>
+        </div>
+        <div class="record-empty" *ngIf="records.length === 0">
+          No recent records.
+        </div>
+      </div>
+    </app-async-view>
+  </mat-card>
+
+  <!-- Access Level Panel -->
+  <mat-card class="access-card">
+    <div class="card-header">
+      <h3>
+        <mat-icon class="section-icon">security</mat-icon>
+        Access Level
+      </h3>
+    </div>
+
+    <app-async-view [state]="(profileState$ | async)!" [skeletonRows]="3" [skeletonCols]="1" (retry)="loadAll()">
+      <div class="access-content" *ngIf="(profileState$ | async)?.data as user">
+        <div class="access-role">
+          <span class="access-role-chip" [class.admin]="user.role === 'ADMIN'">
+            {{ getRoleLabel(user.role) }}
+          </span>
+        </div>
+
+        <!-- Admin permissions -->
+        <ng-container *ngIf="user.role === 'ADMIN'">
+          <p class="access-desc">As an Admin, you have full access to the platform.</p>
+          <ul class="access-list">
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              View all users&#39; verification records
+            </li>
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              Manage user accounts (create, update, deactivate)
+            </li>
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              Access the Users management page
+            </li>
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              Filter records across all users
+            </li>
+          </ul>
+        </ng-container>
+
+        <!-- General User permissions -->
+        <ng-container *ngIf="user.role === 'GENERAL_USER'">
+          <p class="access-desc">As a General User, your access is limited to your own data.</p>
+          <ul class="access-list">
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              View your own verification records
+            </li>
+            <li>
+              <mat-icon class="perm-icon allow">check_circle</mat-icon>
+              View your profile information
+            </li>
+            <li>
+              <mat-icon class="perm-icon deny">block</mat-icon>
+              Cannot access other users&#39; records
+            </li>
+            <li>
+              <mat-icon class="perm-icon deny">block</mat-icon>
+              Cannot access the Users management page
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+    </app-async-view>
+  </mat-card>
+</div>

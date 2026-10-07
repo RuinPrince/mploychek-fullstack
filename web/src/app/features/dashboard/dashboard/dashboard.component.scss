@@ -1,0 +1,379 @@
+// ─── DASHBOARD LAYOUT ──────────────────────────────────────────
+
+.dash-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+
+  h1 {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .dash-subtitle {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin: 4px 0 0;
+  }
+}
+
+.reload-btn {
+  mat-icon {
+    margin-right: 4px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ─── TOP ROW: Profile + Stats ──────────────────────────────────
+
+.dash-top-row {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Profile Card ───────────────────────────────────────────────
+
+.profile-card {
+  padding: var(--space-6);
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-4);
+}
+
+.profile-info {
+  width: 100%;
+}
+
+.profile-name {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.profile-id {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--color-text-hint);
+  margin: 2px 0 var(--space-2);
+}
+
+.profile-email {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  .inline-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-hint);
+  }
+}
+
+.profile-chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chip-role {
+  background: rgba(100, 116, 139, 0.12);
+  color: var(--color-text-secondary);
+
+  &.admin {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--color-accent);
+  }
+}
+
+// ── Stat Cards Grid ────────────────────────────────────────────
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+  }
+
+  &.total {
+    background: rgba(55, 48, 163, 0.1);
+    color: var(--color-primary);
+  }
+
+  &.verified {
+    background: var(--color-verified-bg);
+    color: var(--color-verified);
+  }
+
+  &.pending {
+    background: var(--color-pending-bg);
+    color: var(--color-pending);
+  }
+
+  &.rejected {
+    background: var(--color-rejected-bg);
+    color: var(--color-rejected);
+  }
+}
+
+.stat-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+
+// ─── BOTTOM ROW: Recent records + Access ───────────────────────
+
+.dash-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Card Header ────────────────────────────────────────────────
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .section-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-text-hint);
+  }
+}
+
+// ── Recent Records ─────────────────────────────────────────────
+
+.recent-card {
+  padding: 0;
+  overflow: hidden;
+
+  app-async-view {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.015);
+  }
+}
+
+.record-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.record-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.record-meta {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  margin-top: 2px;
+}
+
+// ── Access Level Panel ─────────────────────────────────────────
+
+.access-card {
+  padding: 0;
+  overflow: hidden;
+
+  app-async-view {
+    display: block;
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+.access-role {
+  margin-bottom: var(--space-3);
+}
+
+.access-role-chip {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(100, 116, 139, 0.12);
+  color: var(--color-text-secondary);
+
+  &.admin {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--color-accent);
+  }
+}
+
+.access-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
+
+.access-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 13px;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+}
+
+.perm-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+
+  &.allow {
+    color: var(--color-verified);
+  }
+
+  &.deny {
+    color: var(--color-text-hint);
+  }
+}
