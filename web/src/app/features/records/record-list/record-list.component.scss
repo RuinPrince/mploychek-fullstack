@@ -1,0 +1,73 @@
+.access-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-6);
+  font-size: 14px;
+  font-weight: 500;
+
+  .banner-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.admin-banner {
+    background: rgba(20, 184, 166, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(20, 184, 166, 0.2);
+  }
+
+  &.user-banner {
+    background: rgba(55, 48, 163, 0.08);
+    color: var(--color-primary);
+    border: 1px solid rgba(55, 48, 163, 0.15);
+  }
+}
+
+.filter-card {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-4) 0;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mono-id {
+  font-family: monospace;
+  background: var(--color-bg);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.hidden {
+  display: none !important;
+}

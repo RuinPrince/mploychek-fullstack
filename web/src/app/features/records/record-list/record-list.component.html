@@ -1,0 +1,110 @@
+<app-page-header
+  title="Verification Records"
+  subtitle="Manage and view background check records">
+</app-page-header>
+
+<div class="access-banner" [ngClass]="isAdmin ? 'admin-banner' : 'user-banner'">
+  <mat-icon class="banner-icon">{{ isAdmin ? 'admin_panel_settings' : 'person' }}</mat-icon>
+  <span>{{ isAdmin ? 'Showing all records across the platform.' : 'Showing your records only.' }}</span>
+</div>
+
+<mat-card class="filter-card">
+  <form [formGroup]="filterForm" class="filter-form">
+    <!-- User ID (Admin Only) -->
+    <mat-form-field appearance="outline" *ngIf="isAdmin" class="filter-field">
+      <mat-label>User ID</mat-label>
+      <input matInput formControlName="userId" placeholder="Filter by user ID">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <!-- Type -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Record Type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let t of types" [value]="t.value">{{ t.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-card>
+
+<mat-card class="table-card">
+  <app-async-view 
+    [state]="(recordsState$ | async)!" 
+    (retry)="retry()"
+    emptyIcon="search_off"
+    emptyTitle="No records found"
+    emptyMessage="Try adjusting your filters to see more results.">
+    
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" class="full-width" matSort>
+        
+        <!-- Record ID -->
+        <ng-container matColumnDef="recordId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let element"> <code class="mono-id">{{element.recordId | slice:0:8}}...</code> </td>
+        </ng-container>
+
+        <!-- Owner (Admin Only) -->
+        <ng-container matColumnDef="ownerUserId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+          <td mat-cell *matCellDef="let element"> {{element.ownerUserId}} </td>
+        </ng-container>
+
+        <!-- Title -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+        </ng-container>
+
+        <!-- Type -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+          <td mat-cell *matCellDef="let element">
+            <app-status-badge [status]="element.status"></app-status-badge>
+          </td>
+        </ng-container>
+        
+        <!-- Verified On -->
+        <ng-container matColumnDef="verifiedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Verified On </th>
+          <td mat-cell *matCellDef="let element" class="text-secondary"> 
+            {{ element.verifiedOn ? (element.verifiedOn | date:'mediumDate') : '--' }} 
+          </td>
+        </ng-container>
+
+        <!-- Created At -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Created </th>
+          <td mat-cell *matCellDef="let element" class="text-secondary"> 
+            {{element.createdAt | date:'mediumDate'}} 
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="isAdmin ? ['recordId', 'ownerUserId', 'title', 'type', 'status', 'verifiedOn', 'createdAt'] : ['recordId', 'title', 'type', 'status', 'verifiedOn', 'createdAt']"></tr>
+        <tr mat-row *matRowDef="let row; columns: isAdmin ? ['recordId', 'ownerUserId', 'title', 'type', 'status', 'verifiedOn', 'createdAt'] : ['recordId', 'title', 'type', 'status', 'verifiedOn', 'createdAt'];"></tr>
+      </table>
+    </div>
+
+  </app-async-view>
+  
+  <!-- Paginator sits outside async-view so it is not destroyed, but we hide it if there's no success state -->
+  <mat-paginator 
+    [pageSize]="10" 
+    [pageSizeOptions]="[5, 10, 25]" 
+    [class.hidden]="(recordsState$ | async)?.status !== 'success'">
+  </mat-paginator>
+</mat-card>
