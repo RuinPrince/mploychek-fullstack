@@ -1,0 +1,73 @@
+.filter-card {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-4) 0;
+}
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-field {
+  flex: 2;
+}
+
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mono-id {
+  font-family: monospace;
+  background: var(--color-bg);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.bold-text {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.role-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(100, 116, 139, 0.12);
+  color: var(--color-text-secondary);
+
+  &.admin {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--color-accent);
+  }
+}
+
+.actions-header {
+  text-align: right;
+  padding-right: var(--space-4);
+}
+
+.actions-cell {
+  text-align: right;
+  padding-right: var(--space-2);
+  white-space: nowrap;
+}
