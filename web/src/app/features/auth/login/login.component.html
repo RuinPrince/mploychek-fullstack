@@ -1,0 +1,127 @@
+<div class="login-split">
+  <!-- ─── Brand Panel (left) ─── -->
+  <div class="brand-panel">
+    <div class="brand-content">
+      <div class="brand-logo">
+        <span class="brand-icon">
+          <mat-icon>verified_user</mat-icon>
+        </span>
+        <span class="brand-name">MPloyChek</span>
+      </div>
+
+      <h2 class="brand-tagline">
+        Verified Hiring,<br>
+        Trusted Results.
+      </h2>
+
+      <p class="brand-description">
+        Streamline background verification with real-time status tracking,
+        role-based access, and comprehensive record management.
+      </p>
+
+      <div class="brand-features">
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Employment &amp; education checks</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Identity &amp; address verification</span>
+        </div>
+        <div class="feature-item">
+          <mat-icon>check_circle</mat-icon>
+          <span>Real-time status tracking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Form Panel (right) ─── -->
+  <div class="form-panel">
+    <div class="form-card">
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your account to continue</p>
+
+      <!-- Inline error alert -->
+      <div class="alert alert-error" *ngIf="errorMessage">
+        <mat-icon class="alert-icon">error_outline</mat-icon>
+        <span>{{ errorMessage }}</span>
+        <button class="alert-close" (click)="dismissError()" aria-label="Dismiss">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+        <!-- User ID -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>User ID</mat-label>
+          <input matInput formControlName="userId" placeholder="e.g. admin001" />
+          <mat-icon matPrefix>person_outline</mat-icon>
+          <mat-error *ngIf="f['userId'].hasError('required')">
+            User ID is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" />
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="f['password'].hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="f['password'].hasError('minlength')">
+            Minimum 6 characters
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Role select -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Login as</mat-label>
+          <mat-select formControlName="role">
+            <mat-option *ngFor="let r of roles" [value]="r.value">
+              {{ r.label }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>badge</mat-icon>
+          <mat-error *ngIf="f['role'].hasError('required')">
+            Please select a role
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Submit -->
+        <button
+          mat-raised-button
+          color="primary"
+          class="full-width submit-btn"
+          type="submit"
+          [disabled]="loading">
+          <mat-spinner *ngIf="loading" diameter="20" class="btn-spinner"></mat-spinner>
+          <span *ngIf="!loading">Sign In</span>
+        </button>
+      </form>
+
+      <!-- Demo credentials hint -->
+      <div class="demo-hint">
+        <button class="demo-toggle" (click)="showDemoHint = !showDemoHint">
+          <mat-icon>{{ showDemoHint ? 'expand_less' : 'expand_more' }}</mat-icon>
+          Demo Credentials
+        </button>
+
+        <div class="demo-credentials" *ngIf="showDemoHint">
+          <div class="demo-row">
+            <span class="demo-label">Admin</span>
+            <code>admin001</code> / <code>Admin&#64;123</code>
+          </div>
+          <div class="demo-row">
+            <span class="demo-label">User</span>
+            <code>user001</code> / <code>User&#64;123</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
