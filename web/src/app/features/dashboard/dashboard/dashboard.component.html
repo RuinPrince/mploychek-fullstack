@@ -38,9 +38,9 @@
   </mat-card>
 
   <!-- Stat Cards -->
-  <div class="stats-grid">
-    <app-async-view [state]="(statsState$ | async)!" [skeletonRows]="1" [skeletonCols]="4" (retry)="loadAll()">
-      <ng-container *ngIf="(statsState$ | async)?.data as stats">
+  <div class="stats-wrapper">
+    <app-async-view [state]="(statsState$ | async)!" [skeletonRows]="2" [skeletonCols]="2" (retry)="loadAll()">
+      <div class="stats-grid" *ngIf="(statsState$ | async)?.data as stats">
         <mat-card class="stat-card">
           <div class="stat-icon total">
             <mat-icon>folder_open</mat-icon>
@@ -80,7 +80,7 @@
             <span class="stat-label">Rejected</span>
           </div>
         </mat-card>
-      </ng-container>
+      </div>
     </app-async-view>
   </div>
 </div>
